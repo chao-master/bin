@@ -1,0 +1,26 @@
+#!/bin/bash
+# git all [<folder> ... ] <git command...>
+
+# Runs a git command in many folders
+# If folders are specified they must end with a /
+
+folders=()
+bold=$(tput bold)$(tput setf 3)
+normal=$(tput sgr0)
+
+while [[ "$1" =~ /$ ]]; do
+    folders+=($1)
+    shift
+done
+
+if [ ${#folders[@]} -eq 0 ]; then
+    folders=*/
+fi
+
+for d in ${folders[@]}; do (
+    cd $d;
+    if [ -d ".git" ] || [ -f ".git" ]; then
+        echo -e "\n${bold}Repository at $d${normal}"
+        git $@
+    fi
+); done
