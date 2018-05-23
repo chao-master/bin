@@ -1,0 +1,32 @@
+#!/bin/bash
+# git action
+
+g=$(git rev-parse --git-dir)
+
+if [ -d "$g/rebase-merge" ]; then
+    if [ -f "$g/rebase-merge/interactive" ]; then
+        echo "rebase interactive"
+    else
+        echo "rebase merge"
+    fi
+else
+    if [ -d "$g/rebase-apply" ]; then
+        if [ -f "$g/rebase-apply/rebasing" ]; then
+            echo "rebase"
+        elif [ -f "$g/rebase-apply/applying" ]; then
+            echo "am"
+        else
+            echo "rebase am"
+        fi
+    elif [ -f "$g/MERGE_HEAD" ]; then
+        echo "merge"
+    elif [ -f "$g/CHERRY_PICK_HEAD" ]; then
+        echo "cherry-pick"
+    elif [ -f "$g/REVERT_HEAD" ]; then
+        echo "revert"
+    elif [ -f "$g/BISECT_LOG" ]; then
+        echo "bisect"
+    else
+        echo "normal"
+    fi
+fi

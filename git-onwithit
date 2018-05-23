@@ -1,0 +1,19 @@
+#/bin/bash
+
+# git onwithit
+# Updates all files, continues the current operation, then display the status
+
+case $(git action) in
+    rebase*) action=rebase ;;
+    cherry-pick) action=cherry-pick ;;
+    revert) action=revert ;;
+    am) action=am ;;
+    *)
+        echo "Not inside a rebase, cherry-pick, revert, or am"
+        exit 1 ;;
+esac
+
+git action
+echo $action
+
+git add -u && git $action --continue; git status
