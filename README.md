@@ -10,6 +10,6 @@ You can either:
 Because I write many many many little scripts and them lose them
 
 ## Contributing
-¯\\_(ツ)_/¯
+¯\\\_(ツ)\_/¯
 For fixes you can submit pull requests I guess.
 For new features you can ask but unless I need them I'm unlikely to make them.
