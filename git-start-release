@@ -1,0 +1,16 @@
+#!/bin/bash
+#Start Release branch
+
+#git start-release [version] [folders...]
+
+version=$1
+shift
+
+echo "Starting release 'release/$version' on:"
+for f; do (
+    echo
+    echo "  $f"
+    cd "$f";
+    git fetch origin dev 2>&1 | sed 's/^/    /g';
+    git push origin "FETCH_HEAD":"refs/heads/release/$version" 2>&1 | sed 's/^/    /g';
+); done

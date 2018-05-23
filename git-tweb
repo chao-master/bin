@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# git tweb <action> [<branch>]
+# Open the tfs git webpage for the given action and given branch, valid actions are:
+#
+# pull-requests (prs)
+# : Lists all pull requests
+#
+# pull-request (pr)
+# : Shows the pull request for the current branch to dev
+#
+# branch
+# : Shows the given branch
+#
+# work-items (wis)
+# : Shows work items releated to the current project
+#
+# user-story, work-item (us, wi)
+# : Checks the branch name for a work item id, and opens it
+
+
+repo=$(git remote get-url origin)
+project=$(echo $repo | sed -re 's/\/_git.*//')
+
+action=$1
+shift
+
+function aorb(){
+    if [[ -z "$1" ]]; then
+        echo "$2"
+    else
+        echo "$1"
+    fi
+}
+
+case $action in
+    prs|pull-requests)
+        start "${repo}/pullrequests"
+        ;;
+    pr|pull-request)
+        point=$(aorb $1 HEAD)
+        branch=$(git rev-parse --abbrev-ref $point | sed -e 's/\//%2F/g')
+        start "${repo}/pullrequests?sourceRef=${branch}&targetRef=dev&_a=createnew"
+        ;;
+    branch)
+        point=$(aorb $1 HEAD)
+        branch=$(git rev-parse --abbrev-ref $point | sed -e 's/\//%2F/g')
+        start "${repo}/branches?targetVersion=GB${branch}&_a=commits"
+        ;;
+    wis|work-items)
+        start "${project}/_workitems"
+        ;;
+    us|wi|user-story|work-item)
+        point=$(aorb $1 HEAD)
+        workItemId=$(git rev-parse --abbrev-ref $point | egrep -o '[0-9]+' | head -1)
+        start "${project}/_workitems?id=${workItemId}&_a=edit"
+        ;;
+    *)
+        echo "Unknown action $action"
+        ;;
+esac
