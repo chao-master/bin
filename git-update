@@ -1,15 +1,15 @@
 #!/bin/bash
-# Does various fetch tasks including:
-# * Fully updating local copies of dev and master
-# * pruning branches
+# Prunes tracking branches and updates dev & master
+# If dev/master is checked out then the branch pulled,
+# Otherwise it is fetched
 
 
 #git update
-HEAD=$(git rev-parse HEAD)
+curBranch=$(git rev-parse --abbrev-ref HEAD)
 
 git fetch origin --prune
 for branch in "dev" "master"; do
-    if [[ $(git rev-parse $branch) == $HEAD ]]; then
+    if [[ "$branch" == "$curBranch" ]]; then
         git pull --ff-only origin
     else
         git fetch origin $branch:$branch
