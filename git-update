@@ -1,0 +1,17 @@
+#!/bin/bash
+# Does various fetch tasks including:
+# * Fully updating local copies of dev and master
+# * pruning branches
+
+
+#git update
+HEAD=$(git rev-parse HEAD)
+
+git fetch origin --prune
+for branch in "dev" "master"; do
+    if [[ $(git rev-parse $branch) == $HEAD ]]; then
+        git pull --ff-only origin
+    else
+        git fetch origin $branch:$branch
+    fi
+done
