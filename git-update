@@ -4,13 +4,18 @@
 # Otherwise it is fetched
 
 
-#git update
+#git update [--no-pull]
 curBranch=$(git rev-parse --abbrev-ref HEAD)
+
 
 git fetch origin --prune
 for branch in "dev" "master"; do
     if [[ "$branch" == "$curBranch" ]]; then
-        git pull --ff-only origin
+        if [[ "$1" == "--no-pull" ]]; then
+            echo "Refusing to update already checked out branch $branch due to --no-pull"
+        else
+            git pull --ff-only origin
+        fi
     else
         git fetch origin $branch:$branch
     fi
