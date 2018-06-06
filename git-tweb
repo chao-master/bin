@@ -55,6 +55,9 @@ case $action in
         workItemId=$(git rev-parse --abbrev-ref $point | egrep -o '[0-9]+' | head -1)
         start "${project}/_workitems?id=${workItemId}&_a=edit"
         ;;
+    ""|repo)
+         start "${repo}"
+         ;;
     *)
         echo "Unknown action $action"
         ;;
