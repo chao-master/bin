@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# git-qcommit <target branch> [<git commit options...>]
+
+# Commits the work to a new branch, pushes it, then swaps back
+# Designed for single action bug fixes
+
+branch=$1
+shift
+
+oldHead=$(git symbolic-ref HEAD)
+git branch $branch
+git checkout $branch --
+
+echo git commit "$@"
+
+git commit "$@"
+git push origin -u "$branch/$branch"
+git checkout $oldHead
