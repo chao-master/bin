@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 # git onwithit
 # Updates all files, continues the current operation, then display the status
@@ -13,7 +13,8 @@ case $(git action) in
         exit 1 ;;
 esac
 
-git action
-echo $action
+git diff --check \
+  && git add -u \
+  && git $action --continue
 
-git add -u && git $action --continue; git status
+git status
