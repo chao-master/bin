@@ -1,6 +1,12 @@
 #!/bin/bash
 # git action
 
+# Based on the git ps1 script
+# Works out what the action the git repository is currentlly in
+# Returns one of: am, merge, cherry-pick, revert, bisect, normal or rebase
+# If rebase is returned a second value of interactive, merge, or am may also
+# be included.
+
 g=$(git rev-parse --git-dir)
 
 if [ -d "$g/rebase-merge" ]; then
