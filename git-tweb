@@ -56,8 +56,19 @@ case $action in
         start "${project}/_workitems?id=${workItemId}&_a=edit"
         ;;
     ""|repo)
-         start "${repo}"
-         ;;
+        start "${repo}"
+        ;;
+    list|list-all|all)
+        point=$(aorb $1 HEAD)
+        branch=$(git rev-parse --abbrev-ref $point | sed -e 's/\//%2F/g')
+        workItemId=$(git rev-parse --abbrev-ref $point | egrep -o '[0-9]+' | head -1)
+
+        echo "   Repository: ${repo}"
+        echo "Pull requests: ${repo}/pullrequests"
+        echo "   Work items: ${project}/_workitems"
+        echo "       Branch: ${repo}/branches?targetVersion=GB${branch}&_a=commits"
+        [ -n "$workItemId" ] && echo "    Work item: ${project}/_workitems?id=${workItemId}&_a=edit"
+        ;;
     *)
         echo "Unknown action $action"
         ;;
