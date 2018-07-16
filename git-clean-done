@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# git-clean-done <merged-into>: Remove merged branches with deleted tracking branches
+
+if [ -z "$1" ]; then
+    target="HEAD"
+else
+    target="$1"
+fi
+
+git branch --list --merged "$target" --format "%(if:equals=[gone])%(upstream:track)%(then)%(refname:short)%(end)" \
+ | xargs git branch -D
