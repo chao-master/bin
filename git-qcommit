@@ -12,6 +12,6 @@ oldHead=$(git symbolic-ref --short HEAD)
 git branch $branch
 git checkout $branch --
 
-git commit "$@"
+git commit "$@" && \
 git push -u origin "$branch:$branch"
 git checkout $oldHead --
