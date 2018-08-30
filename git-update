@@ -14,7 +14,7 @@ for branch in "dev" "master"; do
         if [[ "$1" == "--no-pull" ]]; then
             echo "Refusing to update already checked out branch $branch due to --no-pull"
         else
-            git pull --ff-only origin
+            git pull --ff-only --rebase --autostash origin
         fi
     else
         git fetch origin $branch:$branch
