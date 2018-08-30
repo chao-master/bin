@@ -40,7 +40,8 @@ case $action in
     pr|pull-request)
         point=$(aorb $1 HEAD)
         branch=$(git rev-parse --abbrev-ref $point | sed -e 's/\//%2F/g')
-        start "${repo}/pullrequests?sourceRef=${branch}&targetRef=dev&_a=createnew"
+        to=$(aorb $2 dev)
+        start "${repo}/pullrequests?sourceRef=${branch}&targetRef=${to}&_a=createnew"
         ;;
     branch)
         point=$(aorb $1 HEAD)
