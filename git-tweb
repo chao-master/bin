@@ -17,6 +17,12 @@
 #
 # user-story, work-item (us, wi)
 # : Checks the branch name for a work item id, and opens it
+#
+# build, builds
+# : Shows the builds for the project
+#
+# release, releases
+# : Shows the releases for the project
 
 
 repo=$(git remote get-url origin)
@@ -55,6 +61,17 @@ case $action in
         point=$(aorb $1 HEAD)
         workItemId=$(git rev-parse --abbrev-ref $point | egrep -o '[0-9]+' | head -1)
         start "${project}/_workitems?id=${workItemId}&_a=edit"
+        ;;
+    case)
+        point=$(aorb $1 HEAD)
+        caseId=$(git rev-parse --abbrev-ref $point | egrep -o '(cas|CAS)-[0-9]{5}-[0-9A-Z]{6}' | head -1)
+        echo "$caseId";
+        ;;
+    build|builds)
+        start "${project}/_build"
+        ;;
+    release|releases)
+        start "${project}/_apps/hub/ms.vss-releaseManagement-web.hub-explorer"
         ;;
     ""|repo)
         start "${repo}"
