@@ -8,6 +8,7 @@ case $(git action) in
     cherry-pick) action=cherry-pick ;;
     revert) action=revert ;;
     am) action=am ;;
+    merge) action=merge ;;
     *)
         echo "Not inside a rebase, cherry-pick, revert, or am"
         exit 1 ;;
