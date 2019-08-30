@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# git pick <commit>
+#   - Store commit
+# git pick --restore [<branch>]
+#   - Restore all commits, if a branch is given the commits are restored to that branch
+# git pick --drop
+#   - Drop all the pending commits
+
+case "$1" in
+    "--restore")
+        if [ -z "$2" ]; then
+            git checkout "$2"
+        fi
+        git reflog --format=%H refs/dev-work | tac | git cherry-pick --stdin -m1 && \
+            git update-ref -d refs/dev-work
+        echo "Restored commits"
+        if [ -z "$2" ]; then
+            git checkout -
+        fi
+        ;;
+    "--drop")
+        git update-ref -d refs/dev-work
+        echo "Dropped all stored commits"
+        ;;
+    *)
+        git update-ref --create-reflog refs/dev-work "$1"
+        echo "Stored $1"
+        ;;
+esac
