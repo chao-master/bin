@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -euo pipefail
+
+ip=$(adb -d shell ifconfig | grep -oP '(?<=addr:)192\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
+adb -d tcpip 5555
+adb connect "$ip:5555"
