@@ -1,0 +1,4 @@
+#!/bin/bash
+# Stages all whitespace pending changes, removing anything already staged
+
+git add -u && git diff --cached -w --no-prefix | git apply --cached -R -p0
