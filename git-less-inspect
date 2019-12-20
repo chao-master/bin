@@ -1,0 +1,89 @@
+#!/bin/bash
+
+function lookupBranchInfo(){
+    distInfo=($(eval `git for-each-ref --shell --format='echo "$(git rev-list --count %(refname)..$1)" %(refname:short) "commit(s)"'\
+            refs/heads/dev \
+            refs/heads/master \
+            refs/heads/release/ \
+    ` | sort -n | head -1));
+    baseBranch=${distInfo[1]}
+    displace=$(( lineN + 3))
+    echo -en "\033[${displace}A          "
+    echo -n "${distInfo[0]} commits ahead of ";
+    echo -en "\e[92m"
+    echo -n "${distInfo[1]}"
+    echo -e "\e[0m\033[${displace}B"
+}
+
+if [ -z "$1" ]; then
+    read input < /dev/clipboard
+else 
+    input=$1
+fi
+
+width=$(tput cols)
+[ "$width" -gt 80 ] && width="80"
+
+echo
+printf '%*s\n' "$width" '' | sed "s/  /▀▄/g;s/ $/▀/"
+echo
+
+lineN=0
+baseBranch=""
+
+while read ; do
+    line="$REPLY"
+    case $lineN in
+        "1") #Branch line
+            IFS=", " branches=($line); #Split line into branch names
+            branches=(${branches[@]/HEAD/}) #Remove HEAD
+            branches=(${branches[@]/->/}) #Remove ->
+            branches=(${branches[@]/"origin/"*/}) #Remove origin/*
+            if [ ${#branches[@]} -eq 1 ]; then
+                bterm="  Branch:"
+            else
+                bterm="Branches:"
+            fi
+            for b in "${branches[@]}"; do
+                echo -ne "$bterm \e[92m"
+                echo "$b"
+                bterm="         ";
+            done
+            echo -e "\e[0m [loading...]"
+            ;;
+        *)
+            echo "$line"
+            ;;
+    esac
+    ((lineN++))
+done <<<$(
+git show --no-patch --color --pretty='format:  Commit: %C(yellow)%H%C(reset)
+%D
+  Author: %an
+    Date: %Cgreen%ad%Creset
+
+%B' "$input")
+
+lookupBranchInfo $input &
+echo
+echo "Commit Operations: [F]ixup, [S]quash"
+echo "Branch Operations: [B]ranch history, [C]heckout,  [R]ebase, [P]ush"
+echo "e[X]it"
+
+while : ; do
+    read -s -N 1 char
+    case $char in
+        b|B) git work "$input" ;;
+        c|C) git checkout "$input" ;;
+        f|F) git commit --fixup "$input" ;;
+        s|S) git commit --squash "$input" ;;
+        r|R) git rebase -i "$baseBranch" "$input";;
+        p|P) ;;
+        x|X) exit;;
+    esac
+done
+
+#git tree --color "$baseBranch".."$input" | sed '1s/^*/o/'
+#for job in $(jobs -p); do
+#    wait $job
+#done

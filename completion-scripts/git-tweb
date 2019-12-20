@@ -1,0 +1,16 @@
+#!/bin/bash
+
+_git_tweb()
+{
+    local subcommands="pull-requests prs pull-request pr branch work-items wis user-story work-item us wi release releases repo list list-all all"
+    local subcommand="$(__git_find_on_cmdline "$subcommands")"
+
+    case "$subcommand" in
+        "")
+            __gitcomp "$subcommands" 
+            ;;
+        pr|pull-requets|branch|us|wi|user-story|workitem|list)
+            __gitcomp_direct "$(__git_heads "" "$cur" " ")"
+            ;;
+    esac
+}

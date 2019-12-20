@@ -1,0 +1,6 @@
+#!/bin/bash
+
+file=$(mktemp)
+cat > $file
+sqlite3 "$file" ".schema --indent"
+rm $file

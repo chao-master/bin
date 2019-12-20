@@ -1,0 +1,12 @@
+#!/bin/bash
+cols=$(tput cols)
+size=$(($cols/ 2))
+tput bold
+printf "%-${size}s %-${size}s\n" " Only on $1" "Only on $2"
+tput sgr0
+
+pr -m -t -w $cols <(\
+    git log --color=always --no-merges --pretty=graph --date=relative "$2..$1" \
+) <(\
+    git log --color=always --no-merges --pretty=graph --date=relative "$1..$2" \
+)

@@ -1,0 +1,108 @@
+#!/usr/bin/env node
+//Global file extract tool
+
+const path = require("path");
+const fs = require("fs");
+
+/**
+ * @callback parser~callback<A,B>
+ * @param {A} input 
+ * @param {(error:string,result:B)=>void} method
+ */
+
+/**
+ * @typedef parser~sc
+ * @property {"string"} takes
+ * @property {"callback"} type
+ * @property {parser~callback<string,any>} method
+ */
+
+/**
+ * @typedef parser~tc
+ * @property {"stream"} takes
+ * @property {"callback"} type
+ * @property {(a:stream,b:(error,result)=>void)=>void} method
+ */
+
+/**
+ * @typedef parser
+ * @property {"string"|"stream"} takes
+ * @property {"callback"|"promise"} type
+ * @property {((a:string,b:(error,result)=>void)=>void)|((a:string)=>Promise<any>)} method
+ */
+
+/**
+ * Contains parsers than convert the given file into json
+ * @constant
+ * @type {Object.<string,parser>}
+ */
+const PARSERS = {
+    xml: {
+        takes:"string",
+        gives:"callback",
+        method: (a,b) => require("xml2js").Parser().parseString(a,b)
+    },
+    json: {
+        takes:"string",
+        gives:"promise",
+        method: a=>JSON.parse(a)
+    }
+}
+
+/**
+ * Returns the first truthy value given, or throws an error if none found
+ * @param {string} name Name of paramter to use in error
+ * @param {T[]} A the values to check
+ * @returns {T} The first truthy value
+ * 
+ * @template T
+ */
+function check(name,...A){
+    for(let a of A){
+        if(!!a) return a;
+    }
+    throw TypeError(`No ${name} given.`)
+}
+
+function convert(filename,type){
+    const {takes,gives,method} = PARSERS[type];
+
+    function r(passing,g,b){
+        if (gives == "callback") {
+            method(passing,(err,parsed)=>err?b(err):g(parsed));
+        } else if (gives == "promise"){
+            g(method(passing));
+        } else {
+            b(`Invalid gives type ${gives}`)
+        }
+    }
+
+    return new Promise((g,b)=>{
+        if(takes == "string"){
+            fs.readFile(filename,'utf8',(err,result)=>err? b(err): r(result,g,b));
+        } else if (takes == "stream"){
+            var stream = fs.createReadStream(filename,{encoding:"utf8"});
+            stream.once("error",b);
+            r(stream,g,b);
+        }
+    });
+}
+
+/**
+ * 
+ * @param {string} filename 
+ * @param {string} type 
+ * @param {string} target 
+ */
+async function extract(filename,target,type){
+    filename = check("filename",filename);
+    type = check("filetype",type,path.extname(filename).substr(1)).toLowerCase();
+    target = check("target",target);
+
+    const parsed = await convert(filename,type)
+    for (let item of require("jsonpath").query(parsed,target)){
+        console.log(item);
+    }
+}
+
+extract(...process.argv.slice(2)).catch(console.error)

@@ -12,5 +12,5 @@ for f; do (
     echo "  $f"
     cd "$f";
     git fetch origin dev 2>&1 | sed 's/^/    /g';
-    git push origin "FETCH_HEAD":"refs/heads/release/$version" 2>&1 | sed 's/^/    /g';
+    git push --no-verify origin "FETCH_HEAD":"refs/heads/release/$version" 2>&1 | sed 's/^/    /g';
 ); done

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+    curBranch="$(git rev-parse --abbrev-ref HEAD)"
+else
+    curBranch="$(git rev-parse --abbrev-ref "$1")"
+fi
+
+if [[ "$curBranch" =~ ([^/]+)/([0-9]+) ]]; then
+
+    repo=$(git remote get-url origin)
+    project=$(echo $repo | sed -re 's/\/_git.*//')
+
+    echo "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}"
+    echo "${project}/_workitems?id=${BASH_REMATCH[2]}&_a=edit"
+else
+    echo "-"
+fi

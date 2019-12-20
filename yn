@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Outputs a question followed by y/n
+# Exit code 0 if the user pressed "y", 1 otherwise
+
+if [ -z "$1" ]; then
+    read -n 1 -p "[y/n] " o;
+else
+    read -n 1 -p "$1 [y/n] " o;
+fi
+echo;
+[ $o == "y" ];

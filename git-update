@@ -7,16 +7,25 @@
 #git update [--no-pull]
 curBranch=$(git rev-parse --abbrev-ref HEAD)
 
+fetches=" "
+ffSelf="0"
 
-git fetch origin --prune
 for branch in "dev" "master"; do
     if [[ "$branch" == "$curBranch" ]]; then
         if [[ "$1" == "--no-pull" ]]; then
             echo "Refusing to update already checked out branch $branch due to --no-pull"
         else
-            git pull --ff-only --rebase --autostash origin
+            #git pull --ff-only --rebase --autostash origin
+            fetches="$fetches $branch"
+            ffSelf="1"
         fi
     else
-        git fetch origin $branch:$branch
+        #git fetch origin $branch:$branch
+        fetches="$fetches $branch:$branch"
     fi
 done
+
+git fetch origin --prune $fetches
+if [[ ffSelf == "1" ]]; then
+    git merge --ff-only "origin/$curBranch"
+fi

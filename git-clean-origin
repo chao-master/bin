@@ -1,0 +1,25 @@
+#!/bin/bash
+# Deletes all remote branches that are merged into both the remote master and dev branches
+
+deleting=()
+keeping=()
+
+while read commit branch; do
+    if  [ "$branch" != "refs/heads/dev" ] && \
+        [ "$branch" != "refs/heads/master" ] && \
+        #git merge-base --is-ancestor $commit origin/master && \
+        git merge-base --is-ancestor $commit origin/dev
+    then
+        deleting+=("$branch")
+    else
+        keeping+=("$branch")
+    fi
+done <<< $(git ls-remote --heads origin)
+
+echo "keeping ${keeping[@]/#refs\/heads\//}"
+if [ ${#deleting[@]} -eq 0 ]; then
+    echo "deleting no branches"
+else
+    echo "deleting ${deleting[@]/#refs\/heads\/\n/}"
+    git push origin "${deleting[@]/#/:}"
+fi

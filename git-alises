@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Lists all git aliases
+
+git config --get-regexp ^alias\. | sed 's/^alias\.//; s/\s\+/ /g'

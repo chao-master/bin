@@ -1,0 +1,28 @@
+#!/bin/bash
+
+_git_all()
+{
+    local i c=2 command="";
+    while [ $c -lt $cword ]; do
+        if [[ "${words[c]}" != */ ]]; then
+            command="${words[c]}";
+            break
+        fi
+        ((c++))
+    done
+
+    if [ -z "$command" ]; then
+        __gitcomp "$(git --list-cmds=list-mainporcelain,others,nohelpers,alias,list-complete,config)"
+    else
+    	__git_complete_command "$command" && return
+
+        local expansion=$(__git_aliased_command "$command")
+        if [ -n "$expansion" ]; then
+            words[1]=$expansion
+            __git_complete_command "$expansion"
+        fi
+    fi
+
+    echo
+    echo $c,$command,$cur,${words[@]},$cword
+}

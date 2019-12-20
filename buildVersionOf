@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Author: stuart.watson@felinesoft.com
+
+# ## What this script does
+# This script extracts the version number from the 3 types of files associated
+# with storing version numbers in Xamarin projects and outputs an instruction
+# to the TFS build system to set the build number accordinly.
+# 
+# Specifcally this file extracts:
+#  * The `ApplicationVersion` from a `*.csproj` file
+#  * The `VersionName` from a `AndroidManfiest.xml` file
+#  * The `C`FBundleShortVersionString` from a Info.plist file
+#
+# ## Usage/Setup
+# This script is designed to be ran from inside a TFS build setup. As such you
+# may wish to add the script to your git reposity.
+# Add a Shell script build step to the start of your build definition.
+# Set the script path to point at this script.
+# Set the argument to the path to the file that contains the version
+#
+# ## Remarks
+# The extract is NOT GOOD and is likely to break on legal files if they are not
+# formatted as expected. This problem should be fixed by rewriting this to use
+# a proper XML parser, since all of these files are XML.
+
+case "$1" in
+    *.csproj)
+        echo "Extracting verion from Project (.csproj) file"
+        version=$(grep -oP '(?<=ApplicationVersion>)[^<]*' "$1")
+        ;;
+    */AndroidManifest.xml)
+        echo "Extracting verion from Android Manifest file"
+        version=$(grep -oP '(?<=versionName=")[^"]+' "$1")
+        ;;
+    */Info.plist)
+        echo "Extracting verion from iOS Manifest info file"
+        version=$(sed -n '/<key>CFBundleShortVersionString<\/key>/{n;s/\s*<[^>]\+>\s*//g;p}' "$1")
+        ;;
+    *)
+        echo "Error: Do not know how to handle file '$1'"
+        exit 1
+esac
+
+echo "Version: $version"
+echo "##[build.updatebuildnumber]$version"

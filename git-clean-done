@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# git-clean-done <merged-into>: Remove merged branches with deleted tracking branches
+# git-clean-done <merged-into>: Remove merged branches both locally and remotely
 
 if [ -z "$1" ]; then
     target="HEAD"
@@ -8,5 +8,5 @@ else
     target="$1"
 fi
 
-git branch --list --merged "$target" --format "%(if:equals=[gone])%(upstream:track)%(then)%(refname:short)%(end)" \
- | xargs git branch -D
+git for-each-ref --merged "$target" --no-contains "$target" refs/heads/ --shell --format \
+    "git branch -D %(refname:short);" | sh

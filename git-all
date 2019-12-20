@@ -3,9 +3,11 @@
 
 # Runs a git command in many folders
 # If folders are specified they must end with a /
+# If no folders are specified the command is ran in all folders in the current directory
 
 folders=()
 bold=$(tput bold)$(tput setf 3)
+err=$(tput bold)$(tput setf 1)
 normal=$(tput sgr0)
 
 while [[ "$1" =~ /$ ]]; do
@@ -17,10 +19,34 @@ if [ ${#folders[@]} -eq 0 ]; then
     folders=*/
 fi
 
-for d in ${folders[@]}; do (
-    cd $d;
-    if [ -d ".git" ] || [ -f ".git" ]; then
-        echo -e "\n${bold}Repository at $d${normal}"
-        git $@
+while [ "$#" -gt 0 ]; do
+    args=()
+    while [ "$#" -gt 0 ] && [[ "$1" != "+" ]]; do
+        args+=("$1")
+        shift
+    done
+    if [[ "$1" == "+" ]]; then
+        shift
     fi
-); done
+
+    echo -e "\n${bold}+ Running git ${args[@]} against ${folders[@]}${normal}"
+    fFolders=()
+    for d in ${folders[@]}; do
+        if (
+            cd $d;
+            if [ -d ".git" ] || [ -f ".git" ]; then
+                echo -e "\n${bold}++ Repository at $d${normal}"
+                git "${args[@]}"
+                exit $?
+            fi
+        ); then
+            fFolders+=("$d")
+        else
+            echo "${err}Non clean exit, not continuing on ${d}${normal}"
+        fi;
+    done
+    folders=("${fFolders[@]}")
+done #| LESS="${LESS-FRX}" $(git var GIT_PAGER)
+
+
+

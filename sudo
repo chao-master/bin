@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Basic Sudo simulation for git for windows, it is not very good
+
+if [ $# -eq 0 ]; then
+    powershell -Command '& Start-Process "C:\Program Files\Git\git-bash.exe -c'"${@}"' -Verb runAs'
+else 
+    powershell -Command '& Start-Process "C:\Program Files\Git\git-bash.exe" -Verb runAs'
+
+fi
+

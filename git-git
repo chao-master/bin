@@ -1,0 +1,20 @@
+#!/bin/bash
+# Catches git git, since the git auto-correct turns it into git init, which is sad
+
+leadingGits="git"
+
+while (( "$#" )); do
+    if [[ "$1" == "git" ]]; then
+        leadingGits="$leadingGits git"
+        shift
+    else
+        break
+    fi
+done
+
+echo ""git 
+echo "    You typed git $leadingGits, take a deep breath then maybe try:"
+echo ""
+echo "        git $@"
+echo ""
+echo "    >^.^< - you got this"

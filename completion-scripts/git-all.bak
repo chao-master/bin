@@ -1,0 +1,20 @@
+#!/bin/bash
+
+_git-all_completions()
+{
+    echo
+    echo " >> ${COMP_WORDS[@]} || $COMP_CWORD"
+
+    finishedFolders=0
+    for ((i=1; i<=$COMP_CWORD; i++ )); do
+        echo " >> ${COMP_WORDS[$i]}"
+        if ! [[ "${COMP_WORDS[$i]}" =~ /$ ]]; then
+            finishedFolders=1;
+            break;
+        fi
+    done
+    echo " >> $finishedFolders"
+    
+}
+
+complete -F _git-all_completions git-all

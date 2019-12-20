@@ -3,26 +3,37 @@
 
 # Based on the git ps1 script
 # Works out what the action the git repository is currentlly in
-# Returns one of: am, merge, cherry-pick, revert, bisect, normal or rebase
+# Returns one of:
+#   am [rebase],
+#   merge,
+#   cherry-pick,
+#   revert,
+#   bisect,
+#   normal,
+#   rebase <branch> (interactive|merge)
 # If rebase is returned a second value of interactive, merge, or am may also
-# be included.
+# be included. The two returned values are seperated by a space.
 
 g=$(git rev-parse --git-dir)
+branch=""
 
 if [ -d "$g/rebase-merge" ]; then
+    __git_eread "$g/rebase-merge/head-name" branch
+
     if [ -f "$g/rebase-merge/interactive" ]; then
-        echo "rebase interactive"
+        echo "rebase" "$branch" "interactive"
     else
-        echo "rebase merge"
+        echo "rebase" "$branch" "interactive"
     fi
 else
     if [ -d "$g/rebase-apply" ]; then
         if [ -f "$g/rebase-apply/rebasing" ]; then
-            echo "rebase"
+            __git_eread "$g/rebase-apply/head-name" branch
+            echo "rebase" "$branch"
         elif [ -f "$g/rebase-apply/applying" ]; then
             echo "am"
         else
-            echo "rebase am"
+            echo "am rebase"
         fi
     elif [ -f "$g/MERGE_HEAD" ]; then
         echo "merge"

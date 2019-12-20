@@ -1,0 +1,132 @@
+#!/bin/bash
+#
+# Usage:
+#   git flag-alias <verb> [<options>]
+#   git flag-alias --add [<location>] <verb> <flag> <value>
+#   git flag-alias --remove [<location>] <verb> <flag>
+#   git flag-alias --list [<location>] [<verb>]
+#
+#   location:
+#       Either --global, --system, --local, or --file <file>
+#       Sets the config file to target
+#   verb:
+#       git verb to work with
+#   flag:
+#       custom flag, not including leading dashed
+#   value:
+#       subsitution flags or paramaters, including any dashes
+
+declare -A reps
+
+## Helper function for parsing arguments:
+## Parses the arguments for the local commands into $verb, $flag, and $value
+function parseArgs {
+    case $1 in
+        "--global"|"--system"|"--local")
+            locArg=($1)
+            shift 1
+            ;;
+        "-f"|"--file")
+            locArg=($1 $2)
+            shift 2
+            ;;
+    esac
+    verb=$1
+    flag=$2
+    value=$3
+}
+
+## Helper function for parsing the alias list
+## Reads and parses the list into $reps
+function parselist {
+    local getString
+    local noVerb=0
+    if [ -n "$1" ]; then
+        getString="flag-alias.$n"
+    elif [ -n "$verb" ]; then
+        getString="flag-alias.$verb"
+    else
+        getString="flag-alias"
+        noVerb=1
+    fi
+
+    while read -r key value; do
+        key="-${key##*.}" #Extract key name & add -
+        if [ ${#key} -ne 2 ]; then
+            key="-$key" #Add extra - if word
+        fi
+        case $value in
+            !u*) reps[${key^^}]=${value:2} ;; #Captalise if needed
+            !!*) reps[$key]=${value:1} ;;     #! Escape
+            *) reps[$key]=$value ;;
+        esac
+    done < <(git config --get-regex "$getString")
+}
+
+function add {
+    if [ -z "$verb" ] || [ -z "$flag" ] || [ -z "$value" ]; then
+        echo "Error: missing verb, flag, or value"
+        echo "Usage: git flag-alias --add [<location>] <verb> <flag> <value>"
+        exit 1
+    fi
+    git config ${locArg[@]} --add "flag-alias.$verb.$flag" "$value"
+}
+
+function list {
+    parselist
+    for k in "${!reps[@]}"; do
+        echo "$k ${reps[$k]}"
+    done
+}
+
+function remove {
+    if [ -z "$verb" ] || [ -z "$flag" ]; then
+        echo "Error: missing verb, flag"
+        echo "Usage: git flag-alias --remove [<location>] <verb> <flag>"
+        exit 1
+    fi
+    git config ${locArg[@]} --unset "flag-alias.$verb.$flag"
+}
+
+function run {
+    command=$(git config --get alias."$verb" | cut -f 1 -d " ")
+    parselist $command
+
+    if [ ${#reps[@]} -eq 0 ]; then
+        git "$verb" "$@"
+    else
+        cmd=("$verb")
+        while [ $# -gt 0 ] && [[ "$1" != "--" ]]; do
+            cmd+=(${reps[$1]:-$1})
+            shift
+        done
+
+        echo ") git" "${cmd[@]}" >&2
+        git "${cmd[@]}"
+    fi
+}
+
+## EXEC
+verb=$1
+shift
+case $verb in
+    "--add")
+        parseArgs "$@"
+        add
+        ;;
+    "--remove")
+        parseArgs "$@"
+        remove
+        ;;
+    "--list")
+        parseArgs "$@"
+        list
+        ;;
+    --*)
+        echo "Unknown flag $verb";
+        echo "Valid flags are --add, --remove, and --list";
+        echo "Or pass a git verb";
+        exit 1;
+        ;;
+    *) run "$@" ;;
+esac

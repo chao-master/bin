@@ -16,6 +16,7 @@ esac
 
 git diff --check \
   && git add -u \
-  && git $action --continue
+  && git $action --continue \
+  || echo "Warning: Issue occoured when checking, adding or continuing. Check all conflcits are resolved"
 
 git status

@@ -1,0 +1,10 @@
+#!/bin/bash
+# sort-files
+# Sorts all the given files by mime type
+
+for f; do
+   if [ ! -f "$f" ]; then continue; fi;
+   m="$(file -b --mime-type  "$f")"
+   mkdir -p "$m"
+   mv -v --backup=numbered "$f" "$m"
+done

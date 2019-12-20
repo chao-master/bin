@@ -25,8 +25,12 @@
 # : Shows the releases for the project
 
 
-repo=$(git remote get-url origin)
-project=$(echo $repo | sed -re 's/\/_git.*//')
+# azure ssh remotes are of the form:
+#   git@ssh.<azure-url>:<version>/<company>/<project>/<repo>
+readarray -td"/" repoParts <<< "$(git remote get-url origin | tr -d '\n')"
+company="${repoParts[1]//[$'\t\r\n']}"
+project="${repoParts[2]//[$'\t\r\n']}"
+gitRepo="${repoParts[3]//[$'\t\r\n']}"
 
 action=$1
 shift
@@ -39,20 +43,26 @@ function aorb(){
     fi
 }
 
+function goto(){
+    start "https://dev.azure.com/$company/$project/_$1/${gitRepo}/${2}"
+}
+
 case $action in
     prs|pull-requests)
         start "${repo}/pullrequests"
         ;;
     pr|pull-request)
-        point=$(aorb $1 HEAD)
+        to=$(aorb $1 dev)
+        point=$(aorb $2 HEAD)
         branch=$(git rev-parse --abbrev-ref $point | sed -e 's/\//%2F/g')
-        to=$(aorb $2 dev)
-        start "${repo}/pullrequests?sourceRef=${branch}&targetRef=${to}&_a=createnew"
+        #start "${repo}/pullrequests?sourceRef=${branch}&targetRef=${to}&_a=createnew"
+        #start "${repo}/pullrequestcreate?sourceRef=${branch}&targetRef=${to}"
+        goto "git" "pullrequestcreate?sourceRef=${branch}&targetRef=${to}"
         ;;
     branch)
         point=$(aorb $1 HEAD)
         branch=$(git rev-parse --abbrev-ref $point | sed -e 's/\//%2F/g')
-        start "${repo}/branches?targetVersion=GB${branch}&_a=commits"
+        #start "${repo}/branches?targetVersion=GB${branch}&_a=commits"
         ;;
     wis|work-items)
         start "${project}/_workitems"

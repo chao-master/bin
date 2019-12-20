@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Changes directory to the top level of the git reposistory
+
+cd $(git rev-parse --show-toplevel)

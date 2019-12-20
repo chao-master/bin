@@ -1,0 +1,4 @@
+#!/bin/bash
+#If packages: stop (prune)
+#Otherwise: If bin or obj: execute ynrfmf and stop (prune)
+find -type d -name packages -prune -o \( -name bin -o -name obj \) -prune -exec ynrmf {} +

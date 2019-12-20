@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "Confirm recursive deletion of:"
+for i; do echo "  $i"; done
+yn && rm -rf "$@"
