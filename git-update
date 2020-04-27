@@ -1,16 +1,17 @@
 #!/bin/bash
-# Prunes tracking branches and updates dev & master
+# Prunes tracking branches and updates dev, master and the latest release (if present)
 # If dev/master is checked out then the branch pulled,
 # Otherwise it is fetched
 
 
 #git update [--no-pull]
 curBranch=$(git rev-parse --abbrev-ref HEAD)
+releaseBranch=$(git for-each-ref --count=1 --sort=-refname 'refs/heads/release/*' --format='%(refname:short)')
 
-fetches=" "
+fetches=""
 ffSelf="0"
 
-for branch in "dev" "master"; do
+for branch in "dev" "master" "$releaseBranch"; do
     if [[ "$branch" == "$curBranch" ]]; then
         if [[ "$1" == "--no-pull" ]]; then
             echo "Refusing to update already checked out branch $branch due to --no-pull"
@@ -19,12 +20,13 @@ for branch in "dev" "master"; do
             fetches="$fetches $branch"
             ffSelf="1"
         fi
-    else
+    elif [ -n "$branch" ]; then
         #git fetch origin $branch:$branch
         fetches="$fetches $branch:$branch"
     fi
 done
 
+echo "Fetching:$fetches"
 git fetch origin --prune $fetches
 if [[ ffSelf == "1" ]]; then
     git merge --ff-only "origin/$curBranch"
