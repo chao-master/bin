@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# git worked-items <revision range>
+
+git log --no-merges --format=%B "$@" | grep -oE '#[0-9]+' | sort | uniq
