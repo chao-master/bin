@@ -1,5 +1,9 @@
 #!/bin/bash
 
-# Lists all git aliases
+# Lists all git aliases & git helper commands
 
-git config --get-regexp ^alias\. | sed 's/^alias\.//; s/\s\+/ /g'
+echo "Alises:"
+git config --get-regexp ^alias\. | sed 's/^alias\.//; s/\s\+/ /g; s/^/  /'
+
+echo "Scripts"
+find ~/bin -name 'git-*' | sed 's#.*/git-#  git #'
