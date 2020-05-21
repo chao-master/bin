@@ -70,7 +70,7 @@ case $action in
     us|wi|user-story|work-item)
         point=$(aorb $1 HEAD)
         workItemId=$(git rev-parse --abbrev-ref $point | egrep -o '[0-9]+' | head -1)
-        start "${project}/_workitems?id=${workItemId}&_a=edit"
+        start "https://dev.azure.com/$company/${project}/_workitems?id=${workItemId}&_a=edit"
         ;;
     case)
         point=$(aorb $1 HEAD)
