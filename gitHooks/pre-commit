@@ -3,6 +3,11 @@
 exec 1>&2 # Redirect output to stderr.
 e=0 # Setup exit code
 
+# Prevents the user from commiting on protected branches
+# A protected branch is defined as:
+#  `dev`, `master`, or any `release/`, unless "branch.<branch>.protected" is set to false in the config
+#  Any branch that has "branch.<branch>.protected" set to true in the config
+
 # Verifies that the user is not committing on protected branches
 branch="$(git rev-parse --abbrev-ref HEAD)"
 protected="$(git config --bool --get "branch.$branch.protected")"
@@ -29,8 +34,8 @@ EOF
     e=1
 fi
 
-##DIsabled, it is a bit slow
-
+## Disabled, it is a bit slow
+#
 # # Verifies that all the files refrenced by .csproj files are included in the git repo
 # while read file; do (
 #     dir=$(dirname "$file")
@@ -38,4 +43,6 @@ fi
 #     git ls-files --error-unmatch -- $(~/universalParser.js "$file" '$.Project.ItemGroup[*]["Compile","None"][*]["$"].Include' xml | sed -e 's!^!'"$dir"/'!') > /dev/null
 # ) || e=1; done < <(find -name *.csproj)
 
-# echo $e
+
+# Exit
+exit $e

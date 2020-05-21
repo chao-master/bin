@@ -25,7 +25,7 @@
 # branchInfo[0] will contain the branch type (everything upto first /)
 # branchInfo[1] will contian work item ids split by spaces
 IFS=$'\n' branchInfo=($(git symbolic-ref --short HEAD 2>/dev/null | awk '
-    BEGIN {RS="[/-]";stage=0}
+    BEGIN {RS="[/\n-]";stage=0}
     stage==0 {print $0; stage=1; ORS=" "; next;}
     /^[0-9]+$/ {print "#"$0; next;}
     {exit}

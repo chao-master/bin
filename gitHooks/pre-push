@@ -8,6 +8,12 @@ function error {
     echo "$@" 1>&2;
 }
 
+# Stage 1:
+# Prevents pushing to:
+#  Non-standard branch names (anything other than "bugfix/*", "hotfix/*", or "feature/*")
+#  Already existing "release/*" branches
+#  "dev" and "master"
+
 while read localRef localSha remoteRef remoteSha; do
     case "$remoteRef" in
         refs/heads/bugfix/*|refs/heads/feature/*|refs/heads/hotfix/*)
@@ -37,5 +43,6 @@ if [ $hasError -eq 1 ]; then
     error "Error occoured. Check what you are pushing."
     error "If you are sure you wish to override the errors run again with --no-verify"
 fi
+
 
 exit $hasError
