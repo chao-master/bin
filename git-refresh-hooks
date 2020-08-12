@@ -3,15 +3,7 @@
 #Replaces existing hooks with template hooks
 
 cd $(git rev-parse --show-toplevel)
-templateHooksDir="$(git config --path --get init.templatedir)"/hooks
-currentHooksDir="$(git rev-parse --git-dir)"/hooks
+templateHooksDir="$(git config --path --get init.templatedir)/hooks"
+currentHooksDir="$(git rev-parse --git-dir)/hooks"
 
-for s in "$templateHooksDir"/*; do
-    [ -x "$s" ] || continue;
-    file="$(basename $s)"
-    [ -f "$currentHooksDir/$file" ] || continue;
-    echo "Updating $file"
-    rm "$currentHooksDir/$file"
-done
-
-git init
+cp -Lrv C:/Users/stuart.watson/.git_template/hooks/* .git/hooks
