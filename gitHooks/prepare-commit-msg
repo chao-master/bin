@@ -32,6 +32,7 @@ IFS=$'\n' branchInfo=($(git symbolic-ref --short HEAD 2>/dev/null | awk '
 '));
 
 if [ "${#branchInfo[@]}" -lt 2 ]; then
+    # TODO: we need a way to work out the branch if we are rebasing
     echo "No work items found for branch"
     exit
 fi
@@ -63,13 +64,16 @@ if [ -z "$insertAfter" ]; then
     useHash="" #And don't comment out our line
 fi
 
-echo ">" "${insertAfter:-1}a ${useHash}$workVerb: $workItems"
-
+# Only add line if we are going to use it, or edit it
 case $2 in
     "message"|"template"|"")
-        sed -i "${insertAfter:-1}a ${useHash}$workVerb: $workItems" $1
+        if [ "${useHash}" != "#" ] || ["${GIT_EDITOR}" != ":" ]; then
+            sed -i "${insertAfter:-1}a ${useHash}$workVerb: $workItems" $1
+        fi
         ;;
     "merge"|"squash"|"commit")
-        sed -i "${insertAfter:-1}a # $workVerb: $workItems" $1
+        if [ "${GIT_EDITOR}" != ":" ]; then
+            sed -i "${insertAfter:-1}a # $workVerb: $workItems" $1
+        fi
         ;;
 esac
