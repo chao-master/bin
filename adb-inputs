@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# adb-inputs <words...>
+#   Automates doing a series of inputs of words over adb
+#   Enters each argument, and waits between each
+
+adb shell input text "$1"
+shift
+
+for text in "$@"
+do
+    read -n 1 -s -r -p "Select next text box and press any key"
+    echo "   entering..."
+    adb shell input text "$text"
+done
+
+echo "Done."
