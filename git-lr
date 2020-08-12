@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# git lr <left> <right>
+#
+# Prints a side by side listing of commits on each branch
+
 cols=$(tput cols)
 size=$(($cols/ 2))
 tput bold

@@ -1,5 +1,7 @@
 #!/bin/bash
-# Deletes all remote branches that are merged into both the remote master and dev branches
+
+# git clean-origin
+#   Deletes all remote branches that are merged into both the remote master and dev branches
 
 deleting=()
 keeping=()

@@ -1,18 +1,18 @@
 #!/bin/bash
-# git action
 
-# Based on the git ps1 script
-# Works out what the action the git repository is currentlly in
-# Returns one of:
-#   am [rebase],
-#   merge,
-#   cherry-pick,
-#   revert,
-#   bisect,
-#   normal,
-#   rebase <branch> (interactive|merge)
-# If rebase is returned a second value of interactive, merge, or am may also
-# be included. The two returned values are seperated by a space.
+# git action
+#   Based on the git ps1 script
+#   Works out what the action the git repository is currentlly in
+#   Returns one of:
+#    * am [rebase]
+#    * merge
+#    * cherry-pick
+#    * revert
+#    * bisect
+#    * normal
+#    * rebase <branch> (interactive|merge)
+#   If rebase is returned a second value of interactive, merge, or am may also
+#   be included. The two returned values are seperated by a space.
 
 g=$(git rev-parse --git-dir)
 branch=""

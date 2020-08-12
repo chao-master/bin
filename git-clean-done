@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# git-clean-done <merged-into>: Remove merged branches both locally and remotely
+# git-clean-done <merged-into>
+#   Remove merged branches both locally and remotely
 
 if [ -z "$1" ]; then
     target="HEAD"
