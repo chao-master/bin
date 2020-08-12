@@ -23,5 +23,5 @@ if [ ${#deleting[@]} -eq 0 ]; then
     echo "deleting no branches"
 else
     echo "deleting ${deleting[@]/#refs\/heads\/\n/}"
-    git push origin "${deleting[@]/#/:}"
+    git push origin "${deleting[@]/#/:}" --no-verify
 fi
