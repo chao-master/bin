@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# git script [<script>]
+#
+# Prints the usage blurb at the start of git-<script>
+# Or, lists all the scripts
+
+set -e -o pipefail
+
+if [ -z "$1" ]; then
+    find ~/bin -name 'git-*' | sed 's#.*/git-#  git #'
+else
+    if a=$(which "git-$1"); then
+        cat "$a" | awk 'BEGIN {r=0} /^#!/ && RN==0 {next} /^[^#]/ {exit} r==0 && /^#/ {match($0, /^# +/); r=RLENGTH} {print "    "substr($0,r+1)}'
+    fi
+fi
