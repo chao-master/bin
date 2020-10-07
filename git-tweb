@@ -44,12 +44,17 @@ function aorb(){
 }
 
 function goto(){
-    start "https://dev.azure.com/$company/$project/_$1/${gitRepo}/${2}"
+    start "https://dev.azure.com/$company/$project/_$1"
+}
+
+function gotoRepo(){
+    start "https://dev.azure.com/$company/$project/_git/${gitRepo}/${2}"
 }
 
 case $action in
+    #Broken
     prs|pull-requests)
-        start "${repo}/pullrequests"
+        gotoRepo "pullrequests"
         ;;
     pr|pull-request)
         to=$(aorb $1 dev)
@@ -57,45 +62,44 @@ case $action in
         branch=$(git rev-parse --abbrev-ref $point | sed -e 's/\//%2F/g')
         #start "${repo}/pullrequests?sourceRef=${branch}&targetRef=${to}&_a=createnew"
         #start "${repo}/pullrequestcreate?sourceRef=${branch}&targetRef=${to}"
-        goto "git" "pullrequestcreate?sourceRef=${branch}&targetRef=${to}"
+        gotoRepo "pullrequestcreate?sourceRef=${branch}&targetRef=${to}"
         ;;
     branch)
         point=$(aorb $1 HEAD)
         branch=$(git rev-parse --abbrev-ref $point | sed -e 's/\//%2F/g')
-        #start "${repo}/branches?targetVersion=GB${branch}&_a=commits"
+        gotoRepo "?version=GB${branch}&_a=history"
         ;;
     wis|work-items)
-        start "${project}/_workitems"
+        goto "workitems"
         ;;
     us|wi|user-story|work-item)
         point=$(aorb $1 HEAD)
         workItemId=$(git rev-parse --abbrev-ref $point | egrep -o '[0-9]+' | head -1)
         start "https://dev.azure.com/$company/${project}/_workitems?id=${workItemId}&_a=edit"
         ;;
-    case)
-        point=$(aorb $1 HEAD)
-        caseId=$(git rev-parse --abbrev-ref $point | egrep -o '(cas|CAS)-[0-9]{5}-[0-9A-Z]{6}' | head -1)
-        echo "$caseId";
-        ;;
     build|builds)
-        start "${project}/_build"
+        goto "_build"
         ;;
     release|releases)
-        start "${project}/_apps/hub/ms.vss-releaseManagement-web.hub-explorer"
+        goto "_release"
         ;;
     ""|repo)
-        start "${repo}"
+        gotoRepo
         ;;
+    #Broken
     list|list-all|all)
         point=$(aorb $1 HEAD)
         branch=$(git rev-parse --abbrev-ref $point | sed -e 's/\//%2F/g')
         workItemId=$(git rev-parse --abbrev-ref $point | egrep -o '[0-9]+' | head -1)
 
-        echo "   Repository: ${repo}"
-        echo "Pull requests: ${repo}/pullrequests"
-        echo "   Work items: ${project}/_workitems"
-        echo "       Branch: ${repo}/branches?targetVersion=GB${branch}&_a=commits"
-        [ -n "$workItemId" ] && echo "    Work item: ${project}/_workitems?id=${workItemId}&_a=edit"
+        repoBase="https://dev.azure.com/$company/$project/_git/${gitRepo}"
+        projectBase="https://dev.azure.com/$company/$project/"
+
+        echo "   Repository: ${repoBase}"
+        echo "Pull requests: ${repoBase}/pullrequests"
+        echo "   Work items: ${projectBase}/_workitems"
+        echo "       Branch: ${repoBase}/?version=GB${branch}&_a=history"
+        [ -n "$workItemId" ] && echo "    Work item: ${projectBase}/_workitems/edit/${workItemId}"
         ;;
     *)
         echo "Unknown action $action"
