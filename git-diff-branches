@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# git-diff-branches <root branch> <old branch> <new branch>
+#
+# Takes 3 commits, finds the diffrences between on the branch containing the 
+# second commit up to and including the common ancestor of commits 1 and 2
+# This is then repeated with commits 1 and 3. The resulting diffrences are
+# then diffed
+#
+# git diff-branches A B C is hence equivelent to
+# `diff <(git diff A...B) <(git diff A...C)`
+#
+# Ideal use cases include just after complex rebases to make sure you haven't
+# messed up, just run `git diff-branches dev ORIG_HEAD HEAD`.
+
+a="$(mktemp)"
+b="$(mktemp)"
+
+git diff $1...$2 > "$a"
+git diff $1...$3 > "$b"
+
+git diff --no-index "$a" "$b"

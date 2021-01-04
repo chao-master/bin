@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# git eosmc (end of sprint merge check)
+#
+# Checks for diffrences that exist on master but not dev, and starts a pull
+# request if any are found
+
+# Requies: git-tweb
+
+git diff dev...master --exit-code || git tweb pr dev master

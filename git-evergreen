@@ -1,0 +1,6 @@
+#!/bin/bash
+
+release="$(git for-each-ref --format='%(refname)' refs/heads/release --sort=-refname --count 1)"
+base="$(git merge-base --octopus "$release" master dev)"
+
+git tree "$release" master dev "^$base" "$@"

@@ -1,0 +1,2 @@
+#!/bin/bash
+git reflog refs/stash --format=%H^^..%H | git log --stdin  --pretty=graph --date=relative --show-linear-break
