@@ -48,7 +48,7 @@ function goto(){
 }
 
 function gotoRepo(){
-    start "https://dev.azure.com/$company/$project/_git/${gitRepo}/${2}"
+    start "https://dev.azure.com/$company/$project/_git/${gitRepo}/${1}"
 }
 
 case $action in
@@ -78,10 +78,10 @@ case $action in
         start "https://dev.azure.com/$company/${project}/_workitems?id=${workItemId}&_a=edit"
         ;;
     build|builds)
-        goto "_build"
+        goto "build"
         ;;
     release|releases)
-        goto "_release"
+        goto "release"
         ;;
     ""|repo)
         gotoRepo
