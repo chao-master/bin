@@ -28,6 +28,6 @@ done
 
 echo "Fetching:$fetches"
 git fetch origin --prune $fetches
-if [[ ffSelf == "1" ]]; then
+if [[ $ffSelf == "1" ]]; then
     git merge --ff-only "origin/$curBranch"
 fi
