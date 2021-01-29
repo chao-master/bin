@@ -35,7 +35,7 @@ while [ "$#" -gt 0 ]; do
     fFolders=()
     for d in ${folders[@]}; do
         if (
-            cd $d;
+            cd "$d";
             if [ -d ".git" ] || [ -f ".git" ]; then
                 echo -e "\n${bold}++ Repository at $d${normal}"
                 git "${args[@]}"
