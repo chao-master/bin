@@ -27,10 +27,19 @@
 
 # azure ssh remotes are of the form:
 #   git@ssh.<azure-url>:<version>/<company>/<project>/<repo>
+# or
+#   https://<company>@dev.azure.com/<company>/<project>/_git/<repo>
 readarray -td"/" repoParts <<< "$(git remote get-url origin | tr -d '\n')"
-company="${repoParts[1]//[$'\t\r\n']}"
-project="${repoParts[2]//[$'\t\r\n']}"
-gitRepo="${repoParts[3]//[$'\t\r\n']}"
+
+if [[ "${repoParts[0]}" == "https:" ]]; then
+    company="${repoParts[3]//[$'\t\r\n']}"
+    project="${repoParts[4]//[$'\t\r\n']}"
+    gitRepo="${repoParts[6]//[$'\t\r\n']}"
+else
+    company="${repoParts[1]//[$'\t\r\n']}"
+    project="${repoParts[2]//[$'\t\r\n']}"
+    gitRepo="${repoParts[3]//[$'\t\r\n']}"
+fi
 
 action=$1
 shift
