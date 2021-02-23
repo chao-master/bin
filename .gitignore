@@ -1,3 +1,4 @@
 ngrok.exe
 node_modules/
 .vscode/launch.json
+.azure
