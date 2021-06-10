@@ -2,7 +2,7 @@
 
 # Get work items by numbers provided on stdin
 # Requires:
-#  * js
+#  * jq
 #  * A file called .azure that include varible definiton for:
 #      * $ORG  - The Azure devops organization to use
 #      * $PROJ - The Azure devops project to use
@@ -12,6 +12,13 @@ source .azure
 
 url="https://dev.azure.com/$ORG/$PROJ/_apis/wit/workitemsbatch?api-version=6.1-preview.1"
 
-sed -E 's/^#//' | jq -cs '{"$expand":"None","fields":["System.Title","System.WorkItemType"],"ids":.}' | \
-    curl "$url" -H "Content-Type: application/json" -u ":$PAT" -d @- | \
-    jq -r '.value[] | [.id , .fields["System.WorkItemType"] , .fields["System.Title"]] | @tsv'
+#Select which fields to query and show
+fields=("System.Parent" "System.WorkItemType" "System.State" "System.Title")
+
+#Print header
+printf 'Id\t'; printf '%s\t' "${fields[@]}"; printf '\n'
+
+#Query and print
+sed -E 's/^#//' | jq -cs '{"$expand":"None","fields":$ARGS.positional,"errorPolicy":"omit","ids":.}' --args "${fields[@]}" | \
+    curl -sS "$url" -H "Content-Type: application/json" -u ":$PAT" -d @- | \
+    jq -r '.value[] | [.id , getpath($ARGS.positional[] | ["fields",.])] | @tsv' --args "${fields[@]}"
