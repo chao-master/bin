@@ -7,4 +7,4 @@
 
 # Requies: git-tweb
 
-git diff dev...master --exit-code || git tweb pr dev master
+git diff "dev...${1:-master}" --exit-code || git tweb pr dev "${1:-master}"
