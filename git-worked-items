@@ -1,10 +1,13 @@
 #!/bin/bash
 
-# git worked-items <revision range>
+# git worked-items <revision range> [--raw]
 
 git log --no-merges --format=%B "$@" | grep -oE '#[0-9]+' | uniq | \
 if [[ "$2" == "--raw" ]]; then
     sort
 else
-    azwi | sort -k2r -k1
+    (
+        echo -e "Id\tParent\tType\tState\tTitle"
+        azwi | tail -n +2 | sort -t$'\t' -k3r -k2 -k1
+    ) | column -t -s$'\t'
 fi
