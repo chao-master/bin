@@ -17,8 +17,8 @@
 #   So bugfix/123-456-fix-789 only detects #123 and #456, not #789
 #   No checks are done to insure the numbers relate to work items.
 #   If the commit is a merge, squash, modification of an existing commit,
-#   or if a simular work item line already exists in the message: Then the line will be
-#   prefixed with a '#' commenting it out.
+#   or if a simular work item line already exists in the message: Then the line
+#   will be prefixed with a '#' commenting it out.
 
 
 #Parse branch name into branchInfo
@@ -67,7 +67,7 @@ fi
 # Only add line if we are going to use it, or edit it
 case $2 in
     "message"|"template"|"")
-        if [ "${useHash}" != "#" ] || ["${GIT_EDITOR}" != ":" ]; then
+        if [ "${useHash}" != "#" ] || [ "${GIT_EDITOR}" != ":" ]; then
             sed -i "${insertAfter:-1}a ${useHash}$workVerb: $workItems" $1
         fi
         ;;
