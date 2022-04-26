@@ -1,11 +1,10 @@
 #!/bin/bash
+set -euo pipefail
 
 # git script [<script>]
 #
 # Prints the usage blurb at the start of git-<script>
 # Or, lists all the scripts
-
-set -e -o pipefail
 
 if [ -z "$1" ]; then
     find ~/bin -name 'git-*' | sed 's#.*/git-#  git #'

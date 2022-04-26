@@ -1,7 +1,9 @@
 #!/bin/bash
+set -euo pipefail
 
-# git-clean-done <merged-into>
-#   Remove merged branches both locally and remotely
+# git-clean-done [<merged-into>]
+#   Remove merged branches both locally and remotely, if no target is specified
+#   HEAD is used
 
 if [ -z "$1" ]; then
     target="HEAD"

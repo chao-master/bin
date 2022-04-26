@@ -1,7 +1,10 @@
 #!/bin/bash
+set -euo pipefail
 
 # git onwithit
-# Updates all files, continues the current operation, then display the status
+#   Updates all files, continues the current operation, then display the status
+
+# Requires: git-action
 
 case $(git action) in
     rebase*) action=rebase ;;

@@ -1,7 +1,12 @@
 #!/bin/bash
+set -euo pipefail
 
 # git clean-origin
-#   Deletes all remote branches that are merged into both the remote master and dev branches
+#   Deletes all remote branches that are merged into both the remote master and
+#   dev branches
+
+# TODO: Verify documentation
+# TODO: migrate off dev/master terminology
 
 deleting=()
 keeping=()

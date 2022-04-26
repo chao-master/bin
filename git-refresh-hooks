@@ -1,6 +1,8 @@
 #!/bin/bash
+set -euo pipefail
 
-#Replaces existing hooks with template hooks
+# git refresh-hooks
+#   Replaces existing hooks with template hooks
 
 cd $(git rev-parse --show-toplevel)
 templateHooksDir="$(git config --path --get init.templatedir)/hooks"

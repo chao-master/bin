@@ -1,5 +1,6 @@
 #!/bin/bash
-#
+set -euo pipefail
+
 # Usage:
 #   git flag-alias <verb> [<options>]
 #   git flag-alias --add [<location>] <verb> <flag> <value>

@@ -1,9 +1,9 @@
 #!/bin/bash
+set -euo pipefail
 
 # git-qcommit <target branch> [<git commit options...>]
-
-# Commits the work to a new branch, pushes it, then swaps back
-# Designed for single action bug fixes when policies inforce pull requests
+#   Commits the work to a new branch, pushes it, then swaps back
+#   Designed for single action bug fixes when policies inforce pull requests
 
 branch=$1
 shift

@@ -1,6 +1,12 @@
 #!/bin/bash
+set -euo pipefail
 
 # git worked-items <revision range> [--raw]
+#   Displays a table of the work items that are refrenced in the specified
+#   revision range, showing their Id, Parent, Type, State, and Title
+#   If --raw is specified then only a list of Id's is printed
+
+# REQUIRES: azwi
 
 git log --no-merges --format=%B "$@" | grep -oE '#[0-9]+' | uniq | \
     if [[ "$2" == "--raw" ]]; then

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Changes directory to the top level of the git reposistory
 

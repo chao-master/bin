@@ -1,7 +1,8 @@
 #!/bin/bash
-#Start Release branch
+set -euo pipefail
 
-#git start-release [version] [folders...]
+# git start-release [version] [folders...]
+#   Starts Release branch
 
 version=$1
 shift

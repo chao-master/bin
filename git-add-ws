@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # git add-ws
 #   Stages all whitespace pending changes, removing anything already staged

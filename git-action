@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # git action
 #   Based on the git ps1 script
@@ -11,8 +12,8 @@
 #    * bisect
 #    * normal
 #    * rebase <branch> (interactive|merge)
-#   If rebase is returned a second value of interactive, merge, or am may also
-#   be included. The two returned values are seperated by a space.
+
+# Requires: __git_eread
 
 g=$(git rev-parse --git-dir)
 branch=""

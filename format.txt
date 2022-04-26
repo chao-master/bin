@@ -1,0 +1,28 @@
+File structure:
+
+Files must come in this order:
+1. Shebang
+2. `set` command
+2. Blank line
+3. Documentation
+4. Blank line
+5. Script
+
+Documentation:
+
+1. Documentation lines must:
+   * All start with the comment character, followed by a space (`# ` in bash)
+   * Or be in a multiline comment block and indented
+2. The documentation is made up of one of more running modes
+3. Each running mode starts with a line that shows an example of how it's used, followed by an indented paragraph explaining it
+4. In the example line the following special characters have meaning:
+   * `<>` indicates a non-literal string
+   * `[]` indicates an optional string
+   * `(|)` indicates a group of options, of which one of which should be taken
+   * `|` can also be used with `[]` to indicate a group of optional options
+   * `...` indicates repetition
+   This is designed to match the system git uses themselves
+
+examples:
+```
+# adb

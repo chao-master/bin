@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # adb-inputs <words...>
 #   Automates doing a series of inputs of words over adb

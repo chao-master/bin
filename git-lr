@@ -1,8 +1,12 @@
 #!/bin/bash
+set -euo pipefail
 
 # git lr <left> <right>
 #
 # Prints a side by side listing of commits on each branch
+# Warning: breaks quite hard with emoji
+
+# TODO: fix for emoji
 
 cols=$(tput cols)
 size=$(($cols/ 2))

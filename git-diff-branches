@@ -1,5 +1,6 @@
 #!/bin/bash
-#
+set -euo pipefail
+
 # git-diff-branches <root branch> <old branch> <new branch>
 #
 # Takes 3 commits, finds the diffrences between on the branch containing the 

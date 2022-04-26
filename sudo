@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Basic Sudo simulation for git for windows, it is not very good
 

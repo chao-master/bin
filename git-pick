@@ -1,9 +1,11 @@
 #!/bin/bash
+set -euo pipefail
 
 # git pick <commit>
 #   - Store commit
 # git pick --restore [<branch>]
-#   - Restore all commits, if a branch is given the commits are restored to that branch
+#   - Restore all commits, if a branch is given the commits are restored to that
+#     branch
 # git pick --drop
 #   - Drop all the pending commits
 

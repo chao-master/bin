@@ -1,11 +1,15 @@
 #!/bin/bash
+set -euo pipefail
 
 # git all [@<folder group>|<folder> ... ] <git command...> [+ <git command...>]
 #   Runs a git command in many folders
 #   If folders are specified they must end with a /
-#   A group of folders can be specified with a @ followed by a file name that contains the list of folders
-#   If no folders are specified the command is ran in all folders in the current directory
-#   Additional commands can be specified, sperated by a +. Later commands are only ran if earlier ones exit cleanly
+#   A group of folders can be specified with a @ followed by a file name that
+#   contains the list of folders
+#   If no folders are specified the command is ran in all folders in the current
+#   directory
+#   Additional commands can be specified, sperated by a +. Later commands are
+#   only ran if earlier ones exit cleanly
 
 folders=()
 bold=$(tput bold)$(tput setf 3)

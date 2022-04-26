@@ -1,5 +1,12 @@
 #!/bin/bash
+set -euo pipefail
+
+# Deprecreated: see git worked-items
 
 git fetch origin "release/$1" master
 echo "Work:"
-git log --format=%B "origin/master..origin/release/$1" --no-merges | grep -Eo '#[0-9]+' | sort | uniq | sed 's/^/ - /'
+git log --format=%B "origin/master..origin/release/$1" --no-merges |\
+    grep -Eo '#[0-9]+' |\
+    sort |\
+    uniq |\
+    sed 's/^/ - /'

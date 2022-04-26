@@ -1,5 +1,8 @@
 #!/bin/bash
-# Catches git git, since the git auto-correct turns it into git init, which is sad
+set -euo pipefail
+
+# Catches git git, since the git auto-correct turns it into git init, which is
+# sad
 
 leadingGits="git"
 

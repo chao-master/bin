@@ -1,10 +1,13 @@
 #!/bin/bash
-# Prunes tracking branches and updates dev, master and the latest release (if present)
-# If dev/master is checked out then the branch pulled,
-# Otherwise it is fetched
+set -euo pipefail
+
+# git update [--no-pull]
+#   Prunes tracking branches and updates dev, master and the latest release
+#   (if present).
+#   If dev/master is checked out then the branch pulled, unless --no-pull is
+#   specified, Otherwise it is fetched
 
 
-#git update [--no-pull]
 curBranch=$(git rev-parse --abbrev-ref HEAD)
 releaseBranch=$(git for-each-ref --count=1 --sort=-refname 'refs/heads/release/*' --format='%(refname:short)')
 

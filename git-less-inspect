@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 function lookupBranchInfo(){
     distInfo=($(eval `git for-each-ref --shell --format='echo "$(git rev-list --count %(refname)..$1)" %(refname:short) "commit(s)"'\
