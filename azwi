@@ -14,6 +14,9 @@ url="https://dev.azure.com/$ORG/$PROJ/_apis/wit/workitemsbatch?api-version=6.1-p
 
 #Select which fields to query and show
 fields=("System.Parent" "System.WorkItemType" "System.State" "System.Title")
+if [ "$#" -ne 0 ]; then
+    fields=("$@")
+fi
 
 #Print header
 printf 'Id\t'; printf '%s\t' "${fields[@]}"; printf '\n'
