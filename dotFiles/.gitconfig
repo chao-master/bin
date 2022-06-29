@@ -1,0 +1,93 @@
+[core]
+	#editor = '/c/Program Files (x86)/Notepad++/notepad++' -multiInst -nosession -notabbar -alwaysOnTop
+	#editor = \"C:\\Users\\stuart.watson\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe\" --new-window --wait --log warn
+	editor = \"C:\\Program Files\\Microsoft VS Code\\bin\\code\" --new-window --wait --log warn
+	autocrlf = true
+	whitespace = cr-at-eol
+	#pager = "less -+F"
+
+[alias]
+	tree    = log --graph --decorate --decorate-refs-exclude=refs/remotes/* --pretty=graph --date=relative              --boundary
+	tree-nb = log --graph --decorate --decorate-refs-exclude=refs/remotes/* --pretty=graph --date=relative
+	history = log --graph --decorate --decorate-refs-exclude=refs/remotes/* --pretty=graph --date=relative              --boundary                       dev master                             --first-parent
+    leaves  = log --graph --decorate --decorate-refs-exclude=refs/remotes/* --pretty=graph --date=relative --date-order --boundary --exclude=archive/* --branches HEAD --not dev master --branches=release/* --not  --simplify-by-decoration
+	local-leaves = log --branches --not --remotes --simplify-by-decoration --pretty=graph --date=relative --not
+	work    = log --graph --decorate --decorate-refs-exclude=refs/remotes/* --pretty=more-graph --date=relative         --boundary                                     --not dev master --branches=release/* --not
+	rbTodo  = log --reverse --decorate --decorate-refs-exclude=refs/remotes/* --pretty=more-graph --date=relative
+	overview= log --graph --pretty=more-graph --tags --first-parent --decorate --decorate-refs-exclude=refs/remotes/*
+	ufetch  = !~/bin/git-update
+    #update = fetch origin dev:dev master:master
+    rebased = rebase dev --autostash -i
+	rb      = !git rebase -i dev & git rbTodo dev..HEAD
+    fush    = push --force-with-lease
+	oush    = push -u origin HEAD
+
+[flag-alias "log"]
+	fp = "--first-parent"
+
+[flag-alias "push"]
+	f = "!u--force-with-lease"
+	same = origin HEAD
+
+[pretty]
+	#  [ Not Max]  	<CommitHash> <AuthorName> [<AuthorDate>] (<RefNames>)
+	#  [Only Max]	<CommitHash> (<RefNames>)
+	#  [Only Max]    ├─   Author: <AuthorName> [<AuthorDate>]
+    #  [Only Max]    ├─ Comitter: <ComitterName> [<ComitterDate>]
+	#  [ All    ]    └─ <Subject>
+	#  [ Not Reg]       <Body>
+	graph       ="%C(yellow)%h %C(reset)%an %Cgreen[%ad] %C(auto)%d%n %C(yellow)└─ %C(reset)%s"
+	asciigraph  ="%h %an [%ad]%n    %s"
+	more-graph  ="%C(yellow)%h %C(reset)%an %Cgreen[%ad] %C(auto)%d%n %C(yellow)└─ %C(white bold)%s%n%w(76,4,4)%-b"
+	maxium-graph="%C(yellow)%h %C(auto)%d%n%C(yellow) ├─ %C(reset)  Author: %an %C(green)[%ad]%n%C(yellow) ├─ %C(reset)Comitter: %cn %C(green)[%cd]%n%C(yellow) └─ %C(white bold)%s%C(reset)%n%w(76,4,4)%-b"
+	overview    ="%s%C(auto)%+d"
+
+[diff]
+	noprefix = true
+	
+[user]
+	email = stuart.watson@felinesoft.com
+	name = Watson
+
+#[remote "origin"]
+# 	fetch = refs/heads/release/*:refs/heads/release/*
+# 	fetch = refs/heads/master:refs/heads/master
+# 	fetch = refs/heads/dev:refs/heads/dev
+[winUpdater]
+	recentlySeenVersion = 2.21.0.windows.1
+
+[branch]
+#	dev.rebase=true
+#	develop.rebase=true
+#	master.rebase=true
+
+#[diff]
+#    tool = vscode
+[difftool "vscode"]
+    cmd = code --wait --diff $LOCAL $REMOTE
+
+[diff "sqlite"]
+	textconv = "f(){ echo .dump | sqlite3 \"$1\"; }; f"
+	#textconv = "f(){ echo .dump | sqlite3 \"$1\" | sed -E ':x /[^;]$/ { N; s/\\\n//g ; bx }' | sort; }; f"
+	cachetextconv = true
+	xfuncname = "^CREATE TABLE .*$"
+
+[init]
+	templatedir = ~/.git_template
+[credential]
+	helper = wincred
+[merge]
+	conflictstyle = diff3
+
+[log]
+	graphColors = bold red,bold green,bold yellow,bold blue,bold magenta
+[help]
+	autocorrect = 5
+[pull]
+	rebase = true
+[rebase]
+	autoStash = true
+	autoSquash = true
+[rerere]
+	enabled = false
+
