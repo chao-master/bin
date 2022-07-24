@@ -44,10 +44,6 @@
 
 [diff]
 	noprefix = true
-	
-[user]
-	email = stuart.watson@felinesoft.com
-	name = Watson
 
 #[remote "origin"]
 # 	fetch = refs/heads/release/*:refs/heads/release/*
