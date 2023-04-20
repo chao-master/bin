@@ -42,16 +42,9 @@ else
     gitRepo="${repoParts[3]//[$'\t\r\n']}"
 fi
 
+#Extract action, shift arguments
 action=$1
 shift
-
-function aorb(){
-    if [[ -z "$1" ]]; then
-        echo "$2"
-    else
-        echo "$1"
-    fi
-}
 
 function goto(){
     start "https://dev.azure.com/$company/$project/_$1"
@@ -67,15 +60,15 @@ case $action in
         gotoRepo "pullrequests"
         ;;
     pr|pull-request)
-        to=$(aorb $1 dev)
-        point=$(aorb $2 HEAD)
+        to="${1:-dev}"
+        point="${2:-HEAD}"
         branch=$(git rev-parse --abbrev-ref $point | sed -e 's/\//%2F/g')
         #start "${repo}/pullrequests?sourceRef=${branch}&targetRef=${to}&_a=createnew"
         #start "${repo}/pullrequestcreate?sourceRef=${branch}&targetRef=${to}"
         gotoRepo "pullrequestcreate?sourceRef=${branch}&targetRef=${to}"
         ;;
     branch)
-        point=$(aorb $1 HEAD)
+        point="${1:-HEAD}"
         branch=$(git rev-parse --abbrev-ref $point | sed -e 's/\//%2F/g')
         gotoRepo "?version=GB${branch}&_a=history"
         ;;
@@ -83,7 +76,7 @@ case $action in
         goto "workitems"
         ;;
     us|wi|user-story|work-item)
-        point=$(aorb $1 HEAD)
+        point="${1:-HEAD}"
         workItemId=$(git rev-parse --abbrev-ref $point | egrep -o '[0-9]+' | head -1)
         start "https://dev.azure.com/$company/${project}/_workitems?id=${workItemId}&_a=edit"
         ;;
@@ -98,7 +91,7 @@ case $action in
         ;;
     #Broken
     list|list-all|all)
-        point=$(aorb $1 HEAD)
+        point="${1:-HEAD}"
         branch=$(git rev-parse --abbrev-ref $point | sed -e 's/\//%2F/g')
         workItemId=$(git rev-parse --abbrev-ref $point | egrep -o '[0-9]+' | head -1)
 
